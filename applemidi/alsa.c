@@ -135,7 +135,7 @@ struct ALSADriver *ALSARegisterClient(void *drv)
 	driver->priv->list.next = NULL;
 	driver->priv->drv = drv;
 
-	err = snd_card_create(-1, NULL, THIS_MODULE, sizeof(struct snd_card),
+	err = snd_card_new(NULL, -1, NULL, THIS_MODULE, sizeof(struct snd_card),
 			      &(driver->card));
 	if (err < 0) {
 		pr_err("alsa error creating card: %d\n", err);
