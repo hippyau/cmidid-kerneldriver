@@ -433,7 +433,7 @@ static int _test_applemidi(u16 *buf, int len)
  * @param bytes The number of bytes received.
  */
 
-static void _socket_callback(struct sock *sk, int bytes)
+static void _socket_callback(struct sock *sk)
 {
 	struct MIDIDriverAppleMIDI *driver = raspi; // should NOT be global
 
@@ -443,14 +443,13 @@ static void _socket_callback(struct sock *sk, int bytes)
 
 	struct sk_buff *skb;
 
-	pr_debug("received %d bytes\n", bytes);
-
 	len = skb_queue_len(&sk->sk_receive_queue);
 	while (len > 0) {
 		skb = skb_dequeue(&sk->sk_receive_queue);
 
 		l = (u16 *)(skb->data + 4);
 		length = ntohs(*l);
+		pr_debug("message length %d bytes\n", length);
 		if (length >= (8 + 4)) {
 			if (_test_applemidi((u16 *)(skb->data + 8),
 					    length - 8) == 0) {
